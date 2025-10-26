@@ -6,5 +6,6 @@ import { AccessTokenStrategy } from './strategies/access-token.strategy';
 @Module({
   imports: [PassportModule, JwtModule],
   providers: [AccessTokenStrategy],
+  exports: [AccessTokenStrategy],
 })
 export class AuthModule {}

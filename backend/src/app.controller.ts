@@ -1,6 +1,8 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
-// import { PrismaClient } from 'generated/prisma';
+import { AccessTokenGuard } from './auth/guards/access-token';
+import { Request } from 'express';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
@@ -8,13 +10,14 @@ export class AppController {
 
   @Get()
   getHello(): string {
-    // const prisma = new PrismaClient();
-
-    // prisma.test.create({
-    //   data: {
-    //     id: '1',
-    //   },
-    // });
     return this.appService.getHello();
+  }
+
+  @Get('user-test')
+  @UseGuards(AccessTokenGuard)
+  @ApiBearerAuth('access-token')
+  userTest(@Req() req: Request) {
+    console.log(req.user);
+    return 'test completed';
   }
 }

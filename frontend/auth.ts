@@ -3,6 +3,8 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/prisma";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { comparePasswords } from "./lib/password-utils";
+import jwt from "jsonwebtoken";
+import { JWT } from "next-auth/jwt";
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
@@ -42,6 +44,29 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
+  jwt: {
+    encode: async ({ token, secret }) => {
+      if (!token) {
+        throw new Error("No token to encode");
+      }
+      // jsonwebtoken을 사용하여 일반 JWT 생성
+      return jwt.sign(token, secret as string, {
+        algorithm: "HS256",
+      });
+    },
+    decode: async ({ token, secret }) => {
+      if (!token) {
+        return null;
+      }
+      // jsonwebtoken을 사용하여 JWT 검증 및 디코딩
+      try {
+        return jwt.verify(token, secret as string) as JWT;
+      } catch (error) {
+        console.error("JWT decode error:", error);
+        return null;
+      }
+    },
+  },
   pages: {
     signIn: "/signin",
   },
@@ -49,6 +74,8 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.sub = user.id; // 백엔드에서 사용할 sub 필드
+        token.email = user.email;
       }
       return token;
     },
