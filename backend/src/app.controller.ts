@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import { PrismaClient } from 'generated/prisma';
+// import { PrismaClient } from 'generated/prisma';
 
 @Controller()
 export class AppController {
@@ -8,13 +8,13 @@ export class AppController {
 
   @Get()
   getHello(): string {
-    const prisma = new PrismaClient();
+    // const prisma = new PrismaClient();
 
-    prisma.test.create({
-      data: {
-        id: '1',
-      },
-    });
+    // prisma.test.create({
+    //   data: {
+    //     id: '1',
+    //   },
+    // });
     return this.appService.getHello();
   }
 }
