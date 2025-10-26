@@ -23,6 +23,7 @@ export default function SignupPage() {
       email,
       password,
     });
+    console.log(result);
     if (result?.status === "ok") {
       redirect("/signin");
     }
