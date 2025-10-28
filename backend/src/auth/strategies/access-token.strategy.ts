@@ -6,7 +6,10 @@ type JwtPayload = {
   sub: string;
   email?: string;
   name?: string;
-  picture?: null;
+  id?: string;
+  iat?: number;
+  exp?: number;
+  jti?: string;
 };
 
 @Injectable()
@@ -23,7 +26,8 @@ export class AccessTokenStrategy extends PassportStrategy(
   }
 
   async validate(payload: JwtPayload) {
-    console.log(payload);
+    console.log('JWT Payload:', payload);
+    // payload를 그대로 반환하면 req.user에 할당됩니다
     return payload;
   }
 }
